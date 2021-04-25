@@ -1,0 +1,33 @@
+@import './../variables/index.scss';
+
+@font-face {
+    font-family: $font-family;
+    src: url('../../assets/fonts/Open_Sans/OpenSans-Regular.ttf')
+            format('truetype');
+    font-weight: $font-regular;
+}
+
+@font-face {
+    font-family: $font-family;
+    src: url('../../assets/fonts/Open_Sans/OpenSans-Bold.ttf')
+            format('truetype');
+    font-weight: $font-bold;
+}
+
+@font-face {
+    font-family: $font-family;
+    src: url('../../assets/fonts/Open_Sans/OpenSans-LightItalic.ttf')
+            format('truetype');
+    font-weight: $font-light;
+    font-style: italic;
+}
+
+h1,
+p {
+    font-family: $font-family;
+}
+
+h1 {
+    font-weight: $font-bold;
+    font-style: italic;
+}
