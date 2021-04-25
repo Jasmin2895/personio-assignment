@@ -1,1 +1,2 @@
-export * from "./apiEndpoints"
+export * from "./apiEndpoints";
+export * from "./tableHeaders";

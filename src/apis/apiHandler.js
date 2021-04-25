@@ -1,16 +1,14 @@
-import {personioApiInstance} from "./axios"
-
+import { personioApiInstance } from './axios';
 
 const URL = {
-    CANDIDATE: '/candidates'
-}
+    CANDIDATE: '/candidates',
+};
 
-
-export const getCandidates = async() => {
+export const getCandidates = async () => {
     try {
-        const { data } = await personioApiInstance.get(URL.CANDIDATE)
+        const { data } = await personioApiInstance.get(URL.CANDIDATE);
         return data;
-    }catch(error) {
-        console.error(error)
+    } catch (error) {
+        console.error(error);
     }
-}
+};

@@ -1,7 +1,7 @@
 import axios from 'axios';
-import {PERSONIO_ENDPOINT} from "../constants/index"
+import { PERSONIO_ENDPOINT } from '../constants/index';
 
-const beforeRequest = config => {
+const beforeRequest = (config) => {
     let headers = {};
     let defaultHeaders = config.headers;
     // if (config && config.url != '/api/v1/login') {
@@ -17,20 +17,20 @@ const beforeRequest = config => {
     return config;
 };
 
-const createAxios = baseURL => {
+const createAxios = (baseURL) => {
     const axiosInstance = axios.create({
         baseURL,
     });
     axiosInstance.interceptors.request.use(
-        config => {
+        (config) => {
             return beforeRequest ? beforeRequest(config) : config;
         },
-        error => Promise.reject(error),
+        (error) => Promise.reject(error),
     );
 
     axiosInstance.interceptors.request.use(
-        response => response,
-        error => {
+        (response) => response,
+        (error) => {
             const status = error.response?.status;
             if (status === 401) {
                 // remove cookie
