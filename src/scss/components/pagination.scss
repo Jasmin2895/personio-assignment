@@ -1,0 +1,27 @@
+@import '../variables/';
+.pagination {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination div {
+    color: $white;
+    float: left;
+    padding: 8px 16px;
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+/* Style the active/current link */
+.pagination div.active {
+    background-color: $pagination-active;
+}
+
+/* Add a grey background color on mouse-over */
+.pagination div:not(.active) {
+    background-color: $pagination-mouse-over;
+}
