@@ -1,0 +1,16 @@
+@import "../variables/index.scss";
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 0.25rem;
+    text-align: left;
+    border: 1px solid $input-border-grey;
+}
+
+tbody tr:nth-child(odd) {
+background: $table-row-grey;
+}
