@@ -149,15 +149,25 @@ const CandidateTable = ({ candidateData }) => {
     };
 
     useEffect(() => {
-        console.log('changes done!!!!!');
+        console.log(
+            'changes done!!!!!',
+            queryString.parse(location.search),
+        );
+
         function updateUrl() {
             const query = queryString.parse(location.search);
+            console.log('query', query);
             const modifiedQuery = {
                 ...query,
-                name: nameFilter,
-                position_applied: postionFilter,
-                status: statusFilter,
+                name: nameFilter !== '' ? nameFilter : query.name,
+                position_applied:
+                    postionFilter !== ''
+                        ? postionFilter
+                        : query.position_applied,
+                status:
+                    statusFilter !== '' ? statusFilter : query.status,
             };
+            console.log('modifiedQuery', modifiedQuery);
             history.replace({
                 pathname: location.pathname,
                 search: queryString.stringify(modifiedQuery),

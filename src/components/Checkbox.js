@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-const Checkbox = ({ onChange, ...checkboxProps }) => {
-    const [isChecked, setIsChecked] = useState(false);
+const Checkbox = ({ onChange, isChecked, ...checkboxProps }) => {
+    console.log('Checkbox!!!!!!', isChecked);
+    const [isFilterChecked, setIsChecked] = useState(isChecked);
 
     const changeHandler = (event) => {
-        setIsChecked(!isChecked);
+        setIsChecked(!isFilterChecked);
 
         onChange && onChange(event);
     };
@@ -14,7 +15,7 @@ const Checkbox = ({ onChange, ...checkboxProps }) => {
                 {' '}
                 <input
                     type="checkbox"
-                    checked={isChecked}
+                    checked={isFilterChecked}
                     onChange={changeHandler}
                     {...checkboxProps}
                 />
