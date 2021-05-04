@@ -171,7 +171,7 @@ const CandidateTable = ({ candidateData }) => {
                             {HEADERS.map((header) => {
                                 let tempStr = header;
                                 return (
-                                    <th>
+                                    <th key={header}>
                                         <h5>{tempStr}</h5>
                                         {SortingColumns.indexOf(
                                             header,
@@ -198,7 +198,7 @@ const CandidateTable = ({ candidateData }) => {
                     </thead>
                     <tbody>
                         {currentPageData.map((candidate) => (
-                            <tr>
+                            <tr key={candidate.email}>
                                 <td>{candidate.name}</td>
                                 <td>{candidate.email}</td>
                                 <td>

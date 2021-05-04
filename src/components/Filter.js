@@ -135,7 +135,10 @@ const Filter = ({
                         <div>
                             {applicationStatus.map((status) => {
                                 return (
-                                    <div className="filter-status">
+                                    <div
+                                        className="filter-status"
+                                        key={status}
+                                    >
                                         <label>
                                             <input
                                                 type="radio"
