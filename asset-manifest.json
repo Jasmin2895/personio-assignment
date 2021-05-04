@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/personio-assignment/static/css/main.a95b14e1.chunk.css",
+    "main.js": "/personio-assignment/static/js/main.aa2c8da8.chunk.js",
+    "main.js.map": "/personio-assignment/static/js/main.aa2c8da8.chunk.js.map",
+    "runtime-main.js": "/personio-assignment/static/js/runtime-main.49bf3a01.js",
+    "runtime-main.js.map": "/personio-assignment/static/js/runtime-main.49bf3a01.js.map",
+    "static/js/2.3273869a.chunk.js": "/personio-assignment/static/js/2.3273869a.chunk.js",
+    "static/js/2.3273869a.chunk.js.map": "/personio-assignment/static/js/2.3273869a.chunk.js.map",
+    "static/js/3.4eb8115e.chunk.js": "/personio-assignment/static/js/3.4eb8115e.chunk.js",
+    "static/js/3.4eb8115e.chunk.js.map": "/personio-assignment/static/js/3.4eb8115e.chunk.js.map",
+    "index.html": "/personio-assignment/index.html",
+    "static/css/main.a95b14e1.chunk.css.map": "/personio-assignment/static/css/main.a95b14e1.chunk.css.map",
+    "static/js/2.3273869a.chunk.js.LICENSE.txt": "/personio-assignment/static/js/2.3273869a.chunk.js.LICENSE.txt",
+    "static/media/app.scss": "/personio-assignment/static/media/OpenSans-Regular.1b0809d5.ttf",
+    "static/media/logo.6ce24c58.svg": "/personio-assignment/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.49bf3a01.js",
+    "static/js/2.3273869a.chunk.js",
+    "static/css/main.a95b14e1.chunk.css",
+    "static/js/main.aa2c8da8.chunk.js"
+  ]
+}
