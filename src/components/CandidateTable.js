@@ -6,6 +6,7 @@ import { paginate } from '../utils';
 import { useHistory, useLocation } from 'react-router-dom';
 import _ from 'lodash';
 import queryString from 'query-string';
+import sortingImage from '../assets/sorting.png';
 
 const SortingColumns = [
     'Position Applied',
@@ -13,7 +14,7 @@ const SortingColumns = [
     'Applied',
 ];
 
-const SortingKeysMapping = [
+const sortingKeysMapping = [
     { key: 'position_applied', label: 'Position Applied', sortBy: 0 },
     {
         key: 'year_of_experience',
@@ -26,63 +27,54 @@ const SortingKeysMapping = [
 const CandidateTable = ({ candidateData }) => {
     const history = useHistory();
     const location = useLocation();
-    const headers = HEADERS;
-    const [currentPage, setCurrentPage] = useState(1);
-    const [currentPageData, setCurrentPageData] = useState([]);
-    const [totalCount, setTotalCount] = useState(
-        candidateData.length,
-    );
-    const [sortingOptions, sortKeysMapping] = useState(
-        SortingKeysMapping,
-    );
-    const [selectedFilter, setSelectedFilter] = useState('');
+    const totalCount = candidateData.length;
+    const [pageNumber, setPageNumber] = useState(1); //page counter
+    const [currentPageData, setCurrentPageData] = useState([]); // current page wise data
     const [nameFilter, setNameFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [postionFilter, setPositionFilter] = useState('');
     const pageSize = 10;
 
+    // load the page 1 initially
+    useEffect(() => {
+        getPageData();
+    }, []);
+
     const handlePageChange = (page) => {
-        setCurrentPage(page);
+        setPageNumber(page);
         getPageData();
     };
 
     const getPageData = () => {
         const paginationData = paginate(
             candidateData,
-            currentPage,
+            pageNumber,
             pageSize,
         );
         setCurrentPageData(paginationData);
-        setTotalCount(totalCount);
+        // setTotalCount(totalCount);
         return {
             totalCount: candidateData.length,
             data: paginationData,
         };
     };
 
-    const handleSortByColumn = (columnHeading) => {
-        if (columnHeading.indexOf('||') > -1) {
-            console.log('data', currentPageData);
-            let selectedHeader = columnHeading.split('||')[0];
-            let resultData = _.find(sortingOptions, function (o) {
-                if (o.label === selectedHeader) {
-                    o.sortBy = !o.sortBy;
-                }
-                return o.label === selectedHeader;
-            });
+    const handleSortByColumn = (selectedHeader) => {
+        let resultData = _.find(sortingKeysMapping, function (o) {
+            if (o.label === selectedHeader) {
+                o.sortBy = !o.sortBy;
+            }
+            return o.label === selectedHeader;
+        });
 
-            // console.log('resultData', resultData);
-            let sortByData = resultData.sortBy ? 'asc' : 'desc';
-            // console.log('sortByData', sortByData);
-
-            setCurrentPageData(
-                _.orderBy(
-                    currentPageData,
-                    [resultData.key],
-                    [sortByData],
-                ),
-            );
-        }
+        let sortByData = resultData.sortBy ? 'asc' : 'desc';
+        setCurrentPageData(
+            _.orderBy(
+                currentPageData,
+                [resultData.key],
+                [sortByData],
+            ),
+        );
     };
 
     const onFilterSlection = (event) => {
@@ -91,7 +83,7 @@ const CandidateTable = ({ candidateData }) => {
         //     event.target.value,
         //     event.target.checked,
         // );
-        setSelectedFilter(event.target.value);
+        // setSelectedFilter(event.target.value);
     };
 
     const onStatusFilterChanged = (selectedStatus) => {
@@ -123,10 +115,18 @@ const CandidateTable = ({ candidateData }) => {
 
         let regexVar = new RegExp(name, 'gi');
         let newData = _.filter(currentPageData, (obj) => {
-            console.log('obj', obj.name.match(regexVar));
-            return obj.name.match(regexVar);
+            // console.log('obj', obj.name.match(regexVar));
+            if (obj.name.match(regexVar)) return true;
         });
-        console.log('newData', newData);
+        // console.log('newData', newData);
+        // test with find function
+
+        // let testData = _.every(currentPageData, [
+        //     'name',
+        //     name.match(regexVar).length > 0,
+        // ]);
+
+        // console.log('testData', testData);
         setCurrentPageData(newData);
 
         // _.filter(currentPageData, (obj) => nameValue.test(obj.name));
@@ -134,29 +134,24 @@ const CandidateTable = ({ candidateData }) => {
     };
 
     const onPositionAppliedChangeValue = (position) => {
-        console.log('position', position);
+        // console.log('position', position);
 
         let regexVar = new RegExp(position, 'gi');
         let newData = _.filter(currentPageData, (obj) => {
-            console.log('obj', obj.position_applied.match(regexVar));
-            return obj.name.match(regexVar);
+            // console.log('obj', obj.position_applied.match(regexVar));
+            if (obj.position_applied.match(regexVar)) return true;
         });
 
         setCurrentPageData(newData);
-        console.log('newData', newData);
+        // console.log('newData', newData);
 
         setPositionFilter(position);
     };
 
     useEffect(() => {
-        console.log(
-            'changes done!!!!!',
-            queryString.parse(location.search),
-        );
-
         function updateUrl() {
             const query = queryString.parse(location.search);
-            console.log('query', query);
+            // console.log('query', query);
             const modifiedQuery = {
                 ...query,
                 name: nameFilter !== '' ? nameFilter : query.name,
@@ -167,7 +162,7 @@ const CandidateTable = ({ candidateData }) => {
                 status:
                     statusFilter !== '' ? statusFilter : query.status,
             };
-            console.log('modifiedQuery', modifiedQuery);
+            // console.log('modifiedQuery', modifiedQuery);
             history.replace({
                 pathname: location.pathname,
                 search: queryString.stringify(modifiedQuery),
@@ -178,59 +173,72 @@ const CandidateTable = ({ candidateData }) => {
     }, [nameFilter, statusFilter, postionFilter]);
 
     return (
-        <main className="main-container">
+        <div className="table-container">
             <Filter
-                onSelection={onFilterSlection}
                 onStatusChanged={onStatusFilterChanged}
                 onNameInputChange={onNameFilterChangeValue}
                 onPositionApplied={onPositionAppliedChangeValue}
             />
-            <table>
-                <thead>
-                    <tr>
-                        {headers.map((header) => {
-                            let tempStr = header;
-                            if (SortingColumns.indexOf(header) > -1) {
-                                tempStr = tempStr + '||';
-                            }
-                            return (
-                                <th>
-                                    <button
-                                        onClick={() =>
-                                            handleSortByColumn(
-                                                tempStr,
-                                            )
-                                        }
-                                    >
-                                        {tempStr}
-                                    </button>
-                                </th>
-                            );
-                        })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentPageData.map((candidate) => (
+            <div>
+                <table>
+                    <thead>
                         <tr>
-                            <td>{candidate.name}</td>
-                            <td>{candidate.email}</td>
-                            <td>{candidate.birth_date}</td>
-                            <td>{candidate.year_of_experience}</td>
-                            <td>{candidate.position_applied}</td>
-                            <td>{candidate.application_date}</td>
-                            <td>{candidate.status}</td>
+                            {HEADERS.map((header) => {
+                                let tempStr = header;
+                                // if (SortingColumns.indexOf(header) > -1) {
+                                //     tempStr = tempStr + '||';
+                                // }
+                                return (
+                                    <th>
+                                        <h5>{tempStr}</h5>
+                                        {SortingColumns.indexOf(
+                                            header,
+                                        ) > -1 ? (
+                                            <div>
+                                                <img
+                                                    className="sorting-columns"
+                                                    src={sortingImage}
+                                                    alt="sorting"
+                                                    onClick={() =>
+                                                        handleSortByColumn(
+                                                            tempStr,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </th>
+                                );
+                            })}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <Pagination
-                itemsCount={totalCount}
-                pageSize={pageSize}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-            />
-            page {currentPage} of {totalCount / pageSize}
-        </main>
+                    </thead>
+                    <tbody>
+                        {currentPageData.map((candidate) => (
+                            <tr>
+                                <td>{candidate.name}</td>
+                                <td>{candidate.email}</td>
+                                <td>{candidate.birth_date}</td>
+                                <td>
+                                    {candidate.year_of_experience}
+                                </td>
+                                <td>{candidate.position_applied}</td>
+                                <td>{candidate.application_date}</td>
+                                <td>{candidate.status}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <Pagination
+                    itemsCount={totalCount}
+                    pageSize={pageSize}
+                    currentPage={pageNumber}
+                    onPageChange={handlePageChange}
+                />
+                page {pageNumber} of {totalCount / pageSize}
+            </div>
+        </div>
     );
 };
 

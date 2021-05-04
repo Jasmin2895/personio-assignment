@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Checkbox from './Checkbox';
 import { useLocation, useHistory } from 'react-router-dom';
 import queryString from 'query-string';
-import { set } from 'lodash';
+
+const applicationStatus = ['Approved', 'Rejected', 'Waiting'];
 
 const Filter = ({
-    onSelection,
     onNameInputChange,
     onStatusChanged,
     onPositionApplied,
@@ -31,8 +31,6 @@ const Filter = ({
     const [positionFilterValue, setPositionFilterValue] = useState(
         query.position_applied,
     );
-    // const [nameInput, setNameInput] = useState('');
-    // const [positionApplied, setPositionApplied] = useState('');
     const [statusOption, setStatusOption] = useState(query.status);
 
     useEffect(() => {
@@ -53,11 +51,6 @@ const Filter = ({
                 query.position_applied = positionFilterValue;
             }
 
-            // } else if (!isStatusFilter) {
-            //     query.status = '';
-            // } else if (!isPositionFilterSet) {
-            //     query.position_applied = '';
-            // }
             history.replace({
                 pathname: location.pathname,
                 search: queryString.stringify(query),
@@ -69,10 +62,7 @@ const Filter = ({
 
     const handleFilterChange = (event) => {
         let currentValue = event.target.value;
-        console.log(
-            'handleFilterChange !!!!!!!!!!!',
-            event.target.checked,
-        );
+
         if (currentValue === 'name') {
             setNameFilter(event.target.checked);
         } else if (currentValue === 'status') {
@@ -80,8 +70,6 @@ const Filter = ({
         } else if (currentValue === 'position_applied') {
             setPositionFilter(event.target.checked);
         }
-
-        onSelection && onSelection(event);
     };
     const onInputChnage = (event) => {
         console.log('input', event.target.value, event.target.name);
@@ -103,128 +91,100 @@ const Filter = ({
         setStatusOption(event.target.name);
         onStatusChanged && onStatusChanged(event.target.name);
     };
+
     return (
-        <div>
-            <ul>
-                <li>
-                    <div>
-                        <label>
-                            <Checkbox
-                                name="filter"
-                                value="name"
-                                isChecked={isNameFilterSet}
-                                onChange={handleFilterChange}
-                            />
-                            Name
-                        </label>
-                        {isNameFilterSet ? (
-                            <div>
-                                <input
-                                    type="text"
-                                    name="nameInput"
-                                    value={nameFilterValue}
-                                    onChange={onInputChnage}
-                                ></input>
-                            </div>
-                        ) : (
-                            ''
-                        )}
+        <div className="table-filters">
+            <h3>Filters</h3>
+            <div className="filter-item">
+                <label>
+                    <Checkbox
+                        name="filter"
+                        value="name"
+                        isChecked={isNameFilterSet}
+                        onChange={handleFilterChange}
+                    />
+                    Name
+                </label>
+                {isNameFilterSet ? (
+                    <div className="filter-item-value">
+                        <input
+                            type="text"
+                            name="nameInput"
+                            value={nameFilterValue}
+                            onChange={onInputChnage}
+                        ></input>
                     </div>
-                </li>
-                <li>
-                    <div>
-                        <label>
-                            <Checkbox
-                                name="filter"
-                                value="status"
-                                isChecked={isStatusFilter}
-                                onChange={handleFilterChange}
-                            />
-                            Status
-                        </label>
+                ) : (
+                    ''
+                )}
+            </div>
+
+            <div className="filter-item">
+                <label>
+                    <Checkbox
+                        name="filter"
+                        value="status"
+                        isChecked={isStatusFilter}
+                        onChange={handleFilterChange}
+                    />
+                    Status
+                </label>
+                <div className="filter-item-value">
+                    {' '}
+                    {isStatusFilter ? (
                         <div>
-                            {' '}
-                            {isStatusFilter ? (
-                                <div>
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="Approved"
-                                            checked={
-                                                statusOption ===
-                                                'Approved'
-                                            }
-                                            onChange={
-                                                handleStatusChange
-                                            }
-                                        ></input>
-                                        Approved
-                                    </label>
-
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="Rejected"
-                                            checked={
-                                                statusOption ===
-                                                'Rejected'
-                                            }
-                                            onChange={
-                                                handleStatusChange
-                                            }
-                                        ></input>
-                                        Rejected
-                                    </label>
-
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="Waiting"
-                                            checked={
-                                                statusOption ===
-                                                'Waiting'
-                                            }
-                                            onChange={
-                                                handleStatusChange
-                                            }
-                                        ></input>
-                                        Waiting
-                                    </label>
-                                </div>
-                            ) : (
-                                ''
-                            )}
+                            {applicationStatus.map((status) => {
+                                return (
+                                    <div className="filter-status">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name={status}
+                                                checked={
+                                                    statusOption ===
+                                                    status
+                                                }
+                                                onChange={
+                                                    handleStatusChange
+                                                }
+                                            ></input>
+                                            {status}
+                                        </label>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <label>
-                            <Checkbox
-                                name="filter"
-                                value="position_applied"
-                                isChecked={isPositionFilterSet}
-                                onChange={handleFilterChange}
-                            />
-                            Position Applied
-                        </label>
-                    </div>
-                    <div>
-                        {isPositionFilterSet ? (
-                            <div>
-                                <input
-                                    type="text"
-                                    value={positionFilterValue}
-                                    name="positionApplied"
-                                    onChange={onInputChnage}
-                                ></input>
-                            </div>
-                        ) : (
-                            ''
-                        )}
-                    </div>
-                </li>
-            </ul>
+                    ) : (
+                        ''
+                    )}
+                </div>
+            </div>
+
+            <div className="filter-item">
+                <label>
+                    <Checkbox
+                        name="filter"
+                        value="position_applied"
+                        isChecked={isPositionFilterSet}
+                        onChange={handleFilterChange}
+                    />
+                    Position Applied
+                </label>
+                <div className="filter-item-value">
+                    {isPositionFilterSet ? (
+                        <div>
+                            <input
+                                type="text"
+                                value={positionFilterValue}
+                                name="positionApplied"
+                                onChange={onInputChnage}
+                            ></input>
+                        </div>
+                    ) : (
+                        ''
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

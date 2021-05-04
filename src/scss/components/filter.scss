@@ -1,0 +1,32 @@
+@import '../variables/';
+
+.table-filters {
+    border: 1px solid $input-border-grey;
+    width: 200px;
+    padding: 10px;
+    width: 200px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 10px;
+    height: fit-content;
+}
+
+.filter-item {
+    text-align: initial;
+    margin: 10px 0;
+    label {
+        span {
+            margin-left: 10px;
+        }
+    }
+    &-value {
+        margin-left: 25px;
+        margin-top: 10px;
+    }
+}
+
+.filter-status {
+    display: table-caption;
+    width: 200px;
+    margin-top: 10px;
+}

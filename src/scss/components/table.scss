@@ -7,8 +7,17 @@ table {
 table th,
 table td {
     text-align: center;
-    padding: 0.25rem;
     border: 1px solid $input-border-grey;
+}
+th {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px;
+    font-size: 14px;
 }
 
 table tr:nth-child(even) {
@@ -17,4 +26,14 @@ table tr:nth-child(even) {
 
 .pagination li:hover {
     cursor: pointer;
+}
+
+.sorting-columns {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.table-container {
+    display: flex;
 }
