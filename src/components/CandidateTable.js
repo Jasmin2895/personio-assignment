@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HEADERS } from '../constants';
 import Pagination from './Pagination';
 import Filter from './Filter';
-import { paginate } from '../utils';
+import { paginate, calculateAge } from '../utils';
 import { useHistory, useLocation } from 'react-router-dom';
 import _ from 'lodash';
 import queryString from 'query-string';
@@ -37,6 +37,7 @@ const CandidateTable = ({ candidateData }) => {
     const [postionFilter, setPositionFilter] = useState('');
     const [isFetchingData, dataFetched] = useState(false);
 
+    // get data on each page change
     const getPageData = () => {
         const paginationData = paginate(
             candidateData,
@@ -77,6 +78,7 @@ const CandidateTable = ({ candidateData }) => {
         dataFetched(true);
     }, []);
 
+    // filter Current page data on the basis of name and position applied
     const filterCurrentPageData = (filterParam) => {
         let regexVar = new RegExp(filterParam, 'gi');
         let newData = _.filter(currentPageData, (obj) => {
@@ -86,11 +88,13 @@ const CandidateTable = ({ candidateData }) => {
         setCurrentPageData(newData);
     };
 
+    // events on page change
     const handlePageChange = (page) => {
         setPageNumber(page);
         getPageData();
     };
 
+    // sorting coloumn by years of experience, date
     const handleSortByColumn = (selectedHeader) => {
         let resultData = _.find(sortingKeysMapping, function (o) {
             if (o.label === selectedHeader) {
@@ -195,7 +199,11 @@ const CandidateTable = ({ candidateData }) => {
                             <tr>
                                 <td>{candidate.name}</td>
                                 <td>{candidate.email}</td>
-                                <td>{candidate.birth_date}</td>
+                                <td>
+                                    {calculateAge(
+                                        candidate.birth_date,
+                                    )}
+                                </td>
                                 <td>
                                     {candidate.year_of_experience}
                                 </td>
