@@ -27,23 +27,15 @@ const sortingKeysMapping = [
 const CandidateTable = ({ candidateData }) => {
     const history = useHistory();
     const location = useLocation();
+    const pageSize = 10;
+    const query = queryString.parse(location.search);
     const totalCount = candidateData.length;
     const [pageNumber, setPageNumber] = useState(1); //page counter
     const [currentPageData, setCurrentPageData] = useState([]); // current page wise data
     const [nameFilter, setNameFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [postionFilter, setPositionFilter] = useState('');
-    const pageSize = 10;
-
-    // load the page 1 initially
-    useEffect(() => {
-        getPageData();
-    }, []);
-
-    const handlePageChange = (page) => {
-        setPageNumber(page);
-        getPageData();
-    };
+    const [isFetchingData, dataFetched] = useState(false);
 
     const getPageData = () => {
         const paginationData = paginate(
@@ -51,12 +43,52 @@ const CandidateTable = ({ candidateData }) => {
             pageNumber,
             pageSize,
         );
-        setCurrentPageData(paginationData);
-        // setTotalCount(totalCount);
+        let filteredData = [];
+        if (!isFetchingData) {
+            filteredData = _.filter(paginationData, (obj) => {
+                if (obj.name.match(new RegExp(query.name, 'gi')))
+                    return true;
+            });
+            filteredData = _.filter(filteredData, (obj) => {
+                if (
+                    obj.name.match(
+                        new RegExp(query.position_applied, 'gi'),
+                    )
+                )
+                    return true;
+            });
+            filteredData = _.filter(
+                filteredData,
+                (obj) => obj.status === query.status.toLowerCase(),
+            );
+        }
+        filteredData =
+            filteredData.length > 0 ? filteredData : paginationData;
+        setCurrentPageData(filteredData);
         return {
             totalCount: candidateData.length,
             data: paginationData,
         };
+    };
+
+    // load the page 1 initially
+    useEffect(() => {
+        getPageData();
+        dataFetched(true);
+    }, []);
+
+    const filterCurrentPageData = (filterParam) => {
+        let regexVar = new RegExp(filterParam, 'gi');
+        let newData = _.filter(currentPageData, (obj) => {
+            if (obj.name.match(regexVar)) return true;
+        });
+
+        setCurrentPageData(newData);
+    };
+
+    const handlePageChange = (page) => {
+        setPageNumber(page);
+        getPageData();
     };
 
     const handleSortByColumn = (selectedHeader) => {
@@ -77,81 +109,29 @@ const CandidateTable = ({ candidateData }) => {
         );
     };
 
-    const onFilterSlection = (event) => {
-        // console.log(
-        //     'onFilterSlection',
-        //     event.target.value,
-        //     event.target.checked,
-        // );
-        // setSelectedFilter(event.target.value);
-    };
-
     const onStatusFilterChanged = (selectedStatus) => {
-        console.log(selectedStatus);
-        // if (selectedFilter === 'status') {
-        //     setStatusFilter(selectedStatus);
-        // }
-
         let filteredData = _.filter(
             currentPageData,
             (obj) => obj.status === selectedStatus.toLowerCase(),
         );
-        // setCurrentPageData(filteredData);
-        // console.log('filteredData', filteredData);
+
         setCurrentPageData(filteredData);
         setStatusFilter(selectedStatus);
     };
+
     const onNameFilterChangeValue = (name) => {
-        console.log('name', name);
+        filterCurrentPageData(name);
 
-        // console.log(
-        //     'nameValue',
-        //     nameValue,
-        //     _.find(currentPageData, (obj) => {
-        //         console.log('obj', nameValue.test(obj.name));
-        //         return nameValue.test(obj.name);
-        //     }),
-        // );
-
-        let regexVar = new RegExp(name, 'gi');
-        let newData = _.filter(currentPageData, (obj) => {
-            // console.log('obj', obj.name.match(regexVar));
-            if (obj.name.match(regexVar)) return true;
-        });
-        // console.log('newData', newData);
-        // test with find function
-
-        // let testData = _.every(currentPageData, [
-        //     'name',
-        //     name.match(regexVar).length > 0,
-        // ]);
-
-        // console.log('testData', testData);
-        setCurrentPageData(newData);
-
-        // _.filter(currentPageData, (obj) => nameValue.test(obj.name));
         setNameFilter(name);
     };
 
     const onPositionAppliedChangeValue = (position) => {
-        // console.log('position', position);
-
-        let regexVar = new RegExp(position, 'gi');
-        let newData = _.filter(currentPageData, (obj) => {
-            // console.log('obj', obj.position_applied.match(regexVar));
-            if (obj.position_applied.match(regexVar)) return true;
-        });
-
-        setCurrentPageData(newData);
-        // console.log('newData', newData);
-
+        filterCurrentPageData(position);
         setPositionFilter(position);
     };
 
     useEffect(() => {
         function updateUrl() {
-            const query = queryString.parse(location.search);
-            // console.log('query', query);
             const modifiedQuery = {
                 ...query,
                 name: nameFilter !== '' ? nameFilter : query.name,
@@ -162,7 +142,6 @@ const CandidateTable = ({ candidateData }) => {
                 status:
                     statusFilter !== '' ? statusFilter : query.status,
             };
-            // console.log('modifiedQuery', modifiedQuery);
             history.replace({
                 pathname: location.pathname,
                 search: queryString.stringify(modifiedQuery),
@@ -185,9 +164,6 @@ const CandidateTable = ({ candidateData }) => {
                         <tr>
                             {HEADERS.map((header) => {
                                 let tempStr = header;
-                                // if (SortingColumns.indexOf(header) > -1) {
-                                //     tempStr = tempStr + '||';
-                                // }
                                 return (
                                     <th>
                                         <h5>{tempStr}</h5>

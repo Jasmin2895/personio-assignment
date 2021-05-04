@@ -20,6 +20,7 @@ const Main = () => {
     return (
         <main className="main-container">
             <div className="candidate-table">
+                <h2>Candidate Table</h2>
                 {candidateData ? (
                     <CandidateTable
                         candidateData={tableData}
