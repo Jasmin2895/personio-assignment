@@ -17,7 +17,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('CandidateTable', () => {
-    it('accepts user account props', () => {
+    it('accepts candidate table props', () => {
         const wrapper = mount(
             <CandidateTable candidateData={dummyResponse} />,
         );
