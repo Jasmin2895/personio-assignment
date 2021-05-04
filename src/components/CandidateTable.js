@@ -58,10 +58,12 @@ const CandidateTable = ({ candidateData }) => {
                 )
                     return true;
             });
-            filteredData = _.filter(
-                filteredData,
-                (obj) => obj.status === query.status.toLowerCase(),
-            );
+            if (query.status)
+                filteredData = _.filter(
+                    filteredData,
+                    (obj) =>
+                        obj.status === query.status.toLowerCase(),
+                );
         }
         filteredData =
             filteredData.length > 0 ? filteredData : paginationData;
