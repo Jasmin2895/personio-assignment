@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-// import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { CandidateTable } from './../../components';
 import { getCandidates } from '../../apis';
-import { dummyResponse } from '../../constants';
+// import { dummyResponse } from '../../constants';
 
 import './index.scss';
 
 // at the end implement react fallback loader
 const Main = () => {
+    const history = useHistory();
     const [tableData, setTableData] = useState([]);
     const [candidateData, hasCandidateData] = useState(false);
     useEffect(() => {
         const fetchCandidateData = async () => {
-            setTableData(dummyResponse.data);
-            hasCandidateData(true);
+            const { data } = await getCandidates();
+            console.log('data', data);
+            if (data) {
+                setTableData(data);
+                hasCandidateData(true);
+            } else {
+                history.push('/error');
+            }
         };
         fetchCandidateData();
     }, []);
@@ -26,7 +33,7 @@ const Main = () => {
                         candidateData={tableData}
                     ></CandidateTable>
                 ) : (
-                    <div>No Data</div>
+                    <div>Fetching data...</div>
                 )}
             </div>
         </main>
